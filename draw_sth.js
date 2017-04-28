@@ -197,30 +197,37 @@ x_freq_each_type=[]
 for(i in colorarray){
   x_freq_each_type.push(  hist_mk2(hist_x,x_each_type[i],function(x){return x.length})  )
 }
-
-
-
+/**
+x_hist_group.append("rect").attr("y",0).attr("x",0)
+.attr("width",width_x).attr("height",xScale_bar(2))
+.style("fill","skyblue").attr("transform","translate("+width_x+",0)rotate(180)")
+x_hist_group.append("rect").attr("y",xScale_bar(2)).attr("x",0)
+.attr("width",width_x).attr("height",xScale_bar(3))
+.style("fill","purple").attr("transform","translate("+width_x+",0)rotate(180)")
+**/
+/**
 for(i=0; i<freq_x.length;i++){
   x_hist_group.append("rect").attr("y",0)//.attr("x",width_x*(i+1))
   .attr("height",xScale_bar(freq_x[i])).attr("width",width_x)
   .style("fill","orange")
   .attr("transform","translate("+(width_x*(i+1))+",0)rotate(180)")
 }
-/**
+**/
+
 for(i=0; i<freq_x.length; i++){
   y_temp=0
   for(j=0; j<colorarray.length; j++){
-    x_hist_group.append("rect")//.attr("y",xScale_bar(y_temp))
-    //.attr("height",xScale_bar(x_freq_each_type[j][i]))
-    .attr("height",xScale_bar(3))
+    x_hist_group.append("rect").attr("y",xScale_bar(y_temp))
+    .attr("height",xScale_bar(x_freq_each_type[j][i]))
+    //.attr("height",xScale_bar(3))
     .attr("width",width_x)
     .style("fill",colormap.get(colorarray[j]))
-    .attr("transform","translate("+(width_x*(i+1))+","+xScale_bar(y_temp)+")")
-    //y_temp=y_temp+xScale_bar(x_freq_each_type[j][i])
-    y_temp=y_temp+xScale_bar(3)
+    .attr("transform","translate("+(width_x*(i+1))+",0)rotate(180)")
+    y_temp=y_temp+x_freq_each_type[j][i]
+    //y_temp=y_temp+xScale_bar(3)
   }
 }
-**/
+
 
 //on-click function for legendary rects
 
