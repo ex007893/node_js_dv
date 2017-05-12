@@ -1,37 +1,42 @@
 //data
+
 var butterfly=[
-  {x:0,y:0,r:5,id:'alpha'},
-  {x:70,y:50,r:5,id:'alpha'},
-  {x:50,y:130,r:5,id:'alpha'},
-  {x:15,y:180,r:5,id:'alpha'},
-  {x:16,y:160,r:5,id:'alpha'},
-  {x:17,y:150,r:5,id:'gamma'},
-  {x:18,y:130,r:5,id:'beta'},
-  {x:19,y:100,r:5,id:'gamma'},
-  {x:100,y:120,r:5,id:'alpha'},
-  {x:90,y:110,r:5,id:'alpha'},
-  {x:130,y:70,r:5,id:'alpha'},
-  {x:20,y:80,r:5,id:'alpha'},
-  {x:100,y:100,r:5,id:'beta'},
-  {x:150,y:150,r:5,id:'beta'},
-  {x:160,y:190,r:5,id:'beta'},
-  {x:120,y:70,r:5,id:'beta'},
-  {x:110,y:60,r:5,id:'beta'},
-  {x:170,y:80,r:5,id:'beta'},
-  {x:70,y:105,r:5,id:'gamma'},
-  {x:130,y:160,r:5,id:'gamma'},
-  {x:90,y:20,r:5,id:'gamma'},
-  {x:180,y:30,r:5,id:'gamma'}
-  ,{x:200,y:200,r:5,id:'gamma'}
+  {'x':0,y:0,r:5,id:'alpha','count':1},
+  {'x':70,y:50,r:5,id:'alpha','count':20,'name':'juicy'},
+  {'x':50,y:130,r:5,id:'alpha','count':12},
+  {'x':15,y:180,r:5,id:'alpha','count':30},
+  {'x':16,y:160,r:5,id:'alpha','count':60},
+  {'x':17,y:150,r:5,id:'gamma','count':70},
+  {'x':18,y:130,r:5,id:'beta','count':1},
+  {'x':19,y:100,r:5,id:'gamma','count':3},
+  {'x':100,y:120,r:5,id:'alpha','count':45},
+  {'x':90,y:110,r:5,id:'alpha','count':8},
+  {'x':130,y:70,r:5,id:'alpha','count':5},
+  {'x':20,y:80,r:5,id:'alpha','count':10},
+  {'x':100,y:100,r:5,id:'beta','count':4},
+  {'x':150,y:150,r:5,id:'beta','count':18},
+  {'x':160,y:190,r:5,id:'beta','count':20},
+  {'x':120,y:70,r:5,id:'beta','count':12},
+  {'x':110,y:60,r:5,id:'beta','count':18},
+  {'x':170,y:80,r:5,id:'beta','count':14},
+  {'x':70,y:105,r:5,id:'gamma','count':24},
+  {'x':130,y:160,r:5,id:'gamma','count':30},
+  {'x':90,y:20,r:5,id:'gamma','count':12},
+  {'x':180,y:30,r:5,id:'gamma','count':17},
+  {'x':200,y:200,r:5,id:'gamma','count':20},
+  {'x':34,y:12,r:5,id:'omega','count':35},
+  {'x':65,y:13,r:5,id:'omega','count':1000},
+  {'x':65,y:13,r:5,id:'alpha','count':1000},
+  {'x':90,y:80,r:5,id:'omega','count':2}
 ];
 
 var clicked=0 //used for legendary's on-click function
-
 //this is the color generator
 color=d3.scaleOrdinal(d3.schemeCategory10)
 //for generating the color dictionary
 colorset=new Set(butterfly.map(function(x){return x["id"]}))
 colorarray=Array.from(colorset)
+//------------not sure whether it works-------------------
 colordata=[]
 for(i=0;i<colorarray.length;i++){
   colordata.push({})
@@ -42,24 +47,32 @@ colormap=new Map
 for (k in colordata){
   colormap.set(colordata[k]["type"],colordata[k]["color"])
 }
+//-----------not sure whether we need it-------------------
 //color generator finished
 
 //Customize this to change the visual domain of the axis
+x_limit=[0,500]
+y_limit=[0,500]
 var x_lim_data=d3.extent(butterfly.map(function(x){return x["x"]}))
+x_range=x_lim_data[1]-x_lim_data[0]
+x_lim_data[0]=x_lim_data[0]-x_range/5
+x_lim_data[1]=x_lim_data[1]+x_range/5
 var y_lim_data=d3.extent(butterfly.map(function(x){return x["x"]}))
-var x_limit=[0,500]//for showing on the screen;
-var y_limit=[0,500];
-
+y_range=y_lim_data[1]-y_lim_data[0]
+y_lim_data[0]=y_lim_data[0]-y_range/5
+y_lim_data[1]=y_lim_data[1]+y_range/5
 //FORZOOM
 var zoom = d3.zoom()
     .on("zoom", zoomFunction);
 //FORZOOM END
 //var contain = d3.select("body").append("p").attr("text",'see?');
 mypad=d3.select("body").append("svg").attr("id","pad")
-//.attr("width",1000)
-.attr("height",1000).style("width","100%")
+.attr("height",1000).style("width","1000")
 .attr("transform","translate(0,0)")
-.call(zoom);
+//.call(zoom);
+
+
+
 //Create the pad
 
 //var aAxis = d3.svg.axis();
@@ -74,13 +87,14 @@ x_hist_group.attr("transform","translate(300,280)")
 
 //Create the sCaler
 var xScale=d3.scaleLinear()
-  .domain([x_lim_data[0],x_lim_data[1]]) //数字上的域
-  .range([x_limit[0],x_limit[1]])  //实际的域
+    .domain([x_lim_data[0],x_lim_data[1]]) //数字上的域
+    .range([x_limit[0],x_limit[1]])  //实际的域
 
 var yScale=d3.scaleLinear()
   .domain([y_lim_data[0],y_lim_data[1]])
   .range([y_limit[1],y_limit[0]])
 //Create the scaler
+
 
 var xAxis = d3.axisBottom()
   .scale(xScale)
@@ -89,10 +103,24 @@ var yAxis = d3.axisLeft()
   .scale(yScale)
   .ticks(10); //used for define tick
 //Create the axis
-gX=mygroup.append("g").attr("transform","translate(0,"+(x_limit[1]-x_limit[0])+")")
-.attr("id","xaxis").call(xAxis);
+gX=mygroup.append("g").attr("transform","translate(0,"+(y_limit[1]-y_limit[0])+")")
+.attr("id","xaxis").call(xAxis)
 gY=mygroup.append("g").attr("transform","translate(0,0)").attr("id","yaxis")
 .call(yAxis);
+
+/**
+mygroup.append("text").attr("x",0)
+.attr("y",10).text("here?").style("text-anchor", "head")
+.attr("transform","translate(15,0)rotate(90)")
+
+mygroup.append("text").attr("x",500).
+attr("y",490).text("here?").style("text-anchor", "end")
+**/
+
+
+
+
+///
 
 d3.select("body").selectAll("g").selectAll("text").
 each(function(){
@@ -100,11 +128,11 @@ each(function(){
   attr("display","none")
   })
 
-  d3.select("body").selectAll("g").selectAll("text").
-  each(function(){
-    if (d3.select(this).text()=="0") d3.select(this).
-    attr("display","none")
-    })
+d3.select("body").selectAll("g").selectAll("text").
+each(function(){
+  if (d3.select(this).text()=="0") d3.select(this).
+  attr("display","none")
+  })
   //if the text is zero then we remove it
 var circles=mygroup.selectAll("circle")
   .data(butterfly).enter().append("circle");
@@ -112,7 +140,8 @@ circles.
   //attr("transform","translate(30,30)").
   attr("cx",function(d){return xScale(d["x"]) +0 }).
   attr("cy",function(d){return yScale(d["y"]) +0 }).
-  attr("r",5).attr("id",function(d){return d["id"]}).
+  attr("r",function(d){return Math.log(d["count"])+3}).
+  attr("id",function(d){return d["id"]}).
   attr("type",function(x){return x["id"]}).
   style("fill",function(x){return colormap.get(x["id"])})
   ;
@@ -122,7 +151,7 @@ var tooltip=d3.select("body").append("div").
 
 circles.on("mouseover" , function(d){
   tooltip.transition().duration(500).style("opacity",.9);
-  tooltip.html("X:"+d.x).
+  tooltip.html("X:"+d.x+"</br>Y:"+d.y).
   style("left",(d3.event.pageX)+"px").
   style("top",(d3.event.pageY)+"px")
 }).
@@ -130,9 +159,12 @@ on("mouseout",function(d){
   tooltip.transition().duration(500).style("opacity",0)
 });
 
-function zoomFunction(){d3.scaleLinear()
+function zoomFunction(){
+  /**
+  d3.scaleLinear()
   .domain([x_lim_data[0],x_lim_data[1]]) //数字上的域
   .range([x_limit[0],x_limit[1]])  //实际的域
+  **/
   // create new scale ojects based on event
   var new_xScale = d3.event.transform.rescaleX(xScale)
   var new_yScale = d3.event.transform.rescaleY(yScale)
@@ -213,7 +245,7 @@ for(i=0; i<freq_x.length;i++){
   .attr("transform","translate("+(width_x*(i+1))+",0)rotate(180)")
 }
 **/
-
+/**-------------------  for the rect
 for(i=0; i<freq_x.length; i++){
   y_temp=0
   for(j=0; j<colorarray.length; j++){
@@ -227,11 +259,48 @@ for(i=0; i<freq_x.length; i++){
     //y_temp=y_temp+xScale_bar(3)
   }
 }
-
+--------------------------for the rect**/
 
 //on-click function for legendary rects
 
 //start creating the legendary()
+
+zoom_proper=function(name){
+    juicy=d3.selectAll("circle[type="+name+"]").nodes()
+    juicy_data=butterfly.filter(function(x){return x["id"]==name})
+    juicy_lim_x=d3.extent(juicy_data.map(function(x){return x["x"]}))
+    juicy_lim_y=d3.extent(juicy_data.map(function(x){return x["y"]}))
+    juicy_x_range=juicy_lim_x[1]-juicy_lim_x[0];  juicy_y_range=juicy_lim_y[1]-juicy_lim_y[0];
+    juicy_lim_x[0]-=juicy_x_range*0.1; juicy_lim_x[1]+=juicy_x_range*0.1;
+    juicy_lim_y[0]-=juicy_y_range*0.1; juicy_lim_y[1]+=juicy_y_range*0.1;
+    xScale=d3.scaleLinear().domain([juicy_lim_x[0],juicy_lim_x[1]]).range([x_limit[0],x_limit[1]])
+    yScale=d3.scaleLinear().domain([juicy_lim_y[1],juicy_lim_y[0]]).range([y_limit[0],y_limit[1]])
+
+    gX.call(xAxis.scale(xScale));
+    gY.call(yAxis.scale(yScale));
+
+  // update circle
+  //circles.attr("transform", d3.event.transform)//.attr("r",5/zoom.scale());
+    circles
+    .attr("cx",function(d){return xScale(d["x"])})
+    .attr("cy",function(d){return yScale(d["y"])});
+    circles
+    .attr("display",function(d){
+        if (xScale(d["x"])>x_limit[0] && xScale(d["x"])<x_limit[1]
+        && yScale(d["y"])>y_limit[0] && yScale(d["y"])<y_limit[1]){
+            return "juicy"
+        }
+        else{
+            return "none"
+        }
+    })
+}
+//1.把mypad的zoom注释掉2.添加函数定义3.添加图例事件～    
+
+
+
+
+
 legendary_group.attr("transform","translate(900,300)")
 legends=legendary_group.selectAll(".legend").data(colordata).enter()
 legends.append("rect").attr("class","legend")
@@ -245,9 +314,7 @@ legends.append("rect").attr("class","legend")
   .on("click",function(x){
     mygroup.selectAll("circle").style("opacity",.15)
     mygroup.selectAll("circle[type="+x["type"]+"]").style("opacity",1)
-  })
-  .on("dblclick",function(x){
-    mygroup.selectAll("circle[type="+x["type"]+"]").style("opacity",1)
+    zoom_proper(x["type"])
   })
 //add the text
 legends.append("text").attr("class","legend")
@@ -258,6 +325,8 @@ legends.append("text").attr("class","legend")
     return x["type"]
   })
   .style("text-anchor", "start")
+
+
 
 
 /**
@@ -273,3 +342,32 @@ d3.select("#pad").append("rect").attr("width",20)
 .attr("transform","translate(320,280)rotate(180)")
 .style("fill","steelblue")
 **/
+
+
+/**
+var neo_xScale=d3.scaleLinear()
+  .domain([0,100])
+  .range([x_limit[0],x_limit[1]])
+
+var yScale=d3.scaleLinear()
+  .domain([0,100])
+  .range([y_limit[1],y_limit[0]])
+
+gX.call(xAxis.scale(xScale))
+gY.call(yAxis.scale(yScale))
+circles.attr("cx",function(d){return xScale(d["x"])})
+  .attr("cy",function(d){return yScale(d["y"])})
+**/
+   
+
+
+
+
+
+
+
+
+
+
+
+
